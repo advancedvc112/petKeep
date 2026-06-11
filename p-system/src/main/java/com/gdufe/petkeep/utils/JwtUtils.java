@@ -13,8 +13,6 @@ import java.util.Date;
 
 /**
  * JWT 工具类
- * <p>
- * 配置项：jwt.secret / jwt.expire-hours（在 application.yml 中定义）
  */
 @Slf4j
 @Component
@@ -33,9 +31,6 @@ public class JwtUtils {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    /**
-     * 生成 Token（负载：userId, role）
-     */
     public String generateToken(Long userId, Integer role) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + expireHours * 3600_000L);
@@ -49,16 +44,10 @@ public class JwtUtils {
                 .compact();
     }
 
-    /**
-     * 解析 Token 中的 userId
-     */
     public Long parseUserId(String token) {
         return Long.parseLong(parseClaims(token).getSubject());
     }
 
-    /**
-     * 解析 Token 中的 role
-     */
     public Integer parseRole(String token) {
         return parseClaims(token).get("role", Integer.class);
     }

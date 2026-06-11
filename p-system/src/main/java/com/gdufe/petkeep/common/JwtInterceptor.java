@@ -1,6 +1,5 @@
 package com.gdufe.petkeep.common;
 
-import cn.hutool.core.lang.UUID;
 import com.gdufe.petkeep.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,13 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-/**
- * JWT 拦截器
- * <p>
- * 从请求头 Authorization: Bearer <token> 中提取 Token，
- * 校验有效性后解析 userId + role 写入 UserContext。
- * 校验失败返回 401。
- */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -27,7 +19,6 @@ public class JwtInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) throws Exception {
-        // 预检请求直接放行
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             return true;
         }
@@ -43,10 +34,10 @@ public class JwtInterceptor implements HandlerInterceptor {
             Long userId = jwtUtils.parseUserId(token);
             Integer role = jwtUtils.parseRole(token);
             UserContext.set(userId, role);
-            log.debug("JWT 校验通过 → userId={}, role={}, uri={}", userId, role, request.getRequestURI());
+            log.debug("JWT 校验通过 -> userId={}, role={}, uri={}", userId, role, request.getRequestURI());
             return true;
         } catch (Exception e) {
-            log.warn("JWT 校验失败 → {}", e.getMessage());
+            log.warn("JWT 校验失败 -> {}", e.getMessage());
             send401(response, "令牌无效或已过期");
             return false;
         }
@@ -63,6 +54,7 @@ public class JwtInterceptor implements HandlerInterceptor {
     private void send401(HttpServletResponse response, String message) throws Exception {
         response.setStatus(401);
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write("{\"code\":401,\"message\":\"" + message + "\",\"data\":null}");
+        String json = String.format("{\"code\":401,\"message\":\"%s\",\"data\":null}", message);
+        response.getWriter().write(json);
     }
 }

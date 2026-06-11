@@ -17,8 +17,6 @@ public interface AnimalMapper extends BaseMapper<Animal> {
 
     /**
      * 分页查动物档案 + 关联查打卡数量
-     * <p>
-     * LEFT JOIN tb_checkin 统计每只动物的打卡次数，支持按名字模糊搜 + 类型筛选
      */
     @Select("""
         <script>
