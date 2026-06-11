@@ -1,0 +1,89 @@
+server:
+  port: 8080                          # 服务端口
+  servlet:
+    context-path: /                   # 根路径
+
+spring:
+  application:
+    name: pet-keep-system             # 应用名称
+
+  # ─── 数据源配置（175.178.40.188 Docker MySQL） ─────────────────────────────────
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://175.178.40.188:3309/app_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: Gdufeshuzhi2026
+
+  # ─── Redis 配置（175.178.40.188 Docker Redis） ─────────────────────────────────
+  data:
+    redis:
+      host: 175.178.40.188
+      port: 6380
+      password: Gdufeshuzhi2026
+      database: 0
+      timeout: 5000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 2
+          max-wait: 3000ms
+
+  # ─── 文件上传大小限制 ──────────────────────────────────────────────────────────
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB             # 单文件最大 20MB
+      max-request-size: 50MB          # 单次请求总大小 50MB
+
+  # ─── JSON 配置 ─────────────────────────────────────────────────────────────
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+
+# ─── MyBatis-Plus 配置 ───────────────────────────────────────────────────────
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  type-aliases-package: com.gdufe.petkeep.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# ─── MinIO 对象存储配置（175.178.40.188 Docker MinIO） ──────────────────────────
+minio:
+  endpoint: http://175.178.40.188:9000      # API 端口
+  access-key: minioadmin
+  secret-key: Gdufeshuzhi2026
+  bucket-name: pet-keep                       # 存储桶名称（首次运行自动创建）
+  # 外网访问前缀（拼接后返回给前端的完整 URL）
+  external-url: http://175.178.40.188:9000/pet-keep
+
+# ─── JWT 配置 ────────────────────────────────────────────────────────────
+jwt:
+  secret: pet-keep-system-jwt-secret-key-2026
+  expire-hours: 24
+
+# ─── Knife4j API 文档 ────────────────────────────────────────────────────────
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+# ─── 日志配置 ────────────────────────────────────────────────────────────────
+logging:
+  level:
+    com.gdufe.petkeep: debug
+    org.springframework: warn
