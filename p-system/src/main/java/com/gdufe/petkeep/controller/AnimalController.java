@@ -8,6 +8,9 @@ import com.gdufe.petkeep.dto.AnimalSaveDTO;
 import com.gdufe.petkeep.service.AnimalService;
 import com.gdufe.petkeep.vo.AnimalPageVO;
 import com.gdufe.petkeep.vo.AnimalVO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +18,10 @@ import org.springframework.web.bind.annotation.*;
 /**
  * 动物档案接口
  *
- * 普通用户：GET 查看
- * 管理员：GET/POST/PUT/DELETE 全部
+ * 普通用户：查询
+ * 管理员：查询、新增、更新、删除
  */
+@Tag(name = "动物档案", description = "动物档案的增删改查")
 @RestController
 @RequestMapping("/api/animal")
 @RequiredArgsConstructor
@@ -26,44 +30,43 @@ public class AnimalController {
     private final AnimalService animalService;
 
     /**
-     * GET /api/animal/page?pageNum=1&pageSize=10&name=小&type=0
-     * <p>
+     * GET /api/animal/list
      * 分页查询 + 模糊搜索 + 类型筛选
      */
-    @GetMapping("/page")
-    public R<AnimalPageVO> page(AnimalQueryDTO dto) {
+    @Operation(summary = "分页查询动物列表", description = "支持按名称模糊搜索、按类型筛选")
+    @GetMapping("/list")
+    public R<AnimalPageVO> list(AnimalQueryDTO dto) {
         return R.ok(animalService.page(dto));
     }
 
     /**
-     * GET /api/animal/{id}
-     * <p>
+     * GET /api/animal/detail/{id}
      * 查询动物详情（含打卡数量）
      */
-    @GetMapping("/{id}")
-    public R<AnimalVO> getById(@PathVariable Long id) {
+    @Operation(summary = "查询动物详情", description = "根据ID查询动物详情，含打卡数量")
+    @GetMapping("/detail/{id}")
+    public R<AnimalVO> detail(@Parameter(description = "动物ID") @PathVariable Long id) {
         return R.ok(animalService.getById(id));
     }
 
     /**
-     * POST /api/animal
-     * <p>
+     * POST /api/animal/add
      * 新增动物档案（仅管理员）
-     * 请求体：{ "name":"小橘", "type":0, "area":"图书馆草坪", "coverImg":"/animal/xxx.jpg", "description":"..." }
      */
-    @PostMapping
-    public R<Void> save(@Valid @RequestBody AnimalSaveDTO dto) {
+    @Operation(summary = "新增动物档案", description = "创建新的动物档案（仅管理员可操作）")
+    @PostMapping("/add")
+    public R<Void> add(@Valid @RequestBody AnimalSaveDTO dto) {
         checkAdmin();
         animalService.save(dto);
         return R.ok();
     }
 
     /**
-     * PUT /api/animal
-     * <p>
+     * POST /api/animal/update
      * 更新动物档案（仅管理员）
      */
-    @PutMapping
+    @Operation(summary = "更新动物档案", description = "更新动物档案信息（仅管理员可操作）")
+    @PostMapping("/update")
     public R<Void> update(@Valid @RequestBody AnimalSaveDTO dto) {
         checkAdmin();
         animalService.update(dto);
@@ -71,12 +74,12 @@ public class AnimalController {
     }
 
     /**
-     * DELETE /api/animal/{id}
-     * <p>
+     * POST /api/animal/remove/{id}
      * 删除动物档案（仅管理员，逻辑删除）
      */
-    @DeleteMapping("/{id}")
-    public R<Void> delete(@PathVariable Long id) {
+    @Operation(summary = "删除动物档案", description = "删除动物档案，支持逻辑删除（仅管理员可操作）")
+    @PostMapping("/remove/{id}")
+    public R<Void> remove(@Parameter(description = "动物ID") @PathVariable Long id) {
         checkAdmin();
         animalService.delete(id);
         return R.ok();

@@ -7,19 +7,19 @@ spring:
   application:
     name: pet-keep-system             # 应用名称
 
-  # ─── 数据源配置（Docker MySQL） ─────────────────────────────────
+  # ─── 数据源配置（175.178.40.188 Docker MySQL） ─────────────────────────────────
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3309/app_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://175.178.40.188:3309/app_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
     username: root
-    password: 123456
+    password: Gdufeshuzhi2026
 
-  # ─── Redis 配置（Docker Redis） ─────────────────────────────────
+  # ─── Redis 配置（175.178.40.188 Docker Redis） ─────────────────────────────────
   data:
     redis:
-      host: localhost
+      host: 175.178.40.188
       port: 6380
-      password: 123456
+      password: Gdufeshuzhi2026
       database: 0
       timeout: 5000ms
       lettuce:
@@ -55,14 +55,14 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
 
-# ─── MinIO 对象存储配置（Docker MinIO） ──────────────────────────
+# ─── MinIO 对象存储配置（175.178.40.188 Docker MinIO） ──────────────────────────
 minio:
-  endpoint: http://localhost:9000      # API 端口
+  endpoint: http://175.178.40.188:9000      # API 端口
   access-key: minioadmin
-  secret-key: 123456
+  secret-key: Gdufeshuzhi2026
   bucket-name: pet-keep                       # 存储桶名称（首次运行自动创建）
   # 外网访问前缀（拼接后返回给前端的完整 URL）
-  external-url: http://localhost:9000/pet-keep
+  external-url: http://175.178.40.188:9000/pet-keep
 
 # ─── JWT 配置 ────────────────────────────────────────────────────────────
 jwt:

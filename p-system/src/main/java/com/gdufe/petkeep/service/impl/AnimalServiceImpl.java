@@ -15,6 +15,7 @@ import com.gdufe.petkeep.vo.AnimalVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -64,6 +65,8 @@ public class AnimalServiceImpl implements AnimalService {
         animal.setArea(dto.getArea());
         animal.setCoverImg(dto.getCoverImg());
         animal.setDescription(dto.getDescription());
+        animal.setCreateTime((LocalDateTime.now()));
+        animal.setUpdateTime((LocalDateTime.now()));
         animalMapper.insert(animal);
     }
 
@@ -81,6 +84,7 @@ public class AnimalServiceImpl implements AnimalService {
         animal.setArea(dto.getArea());
         animal.setCoverImg(dto.getCoverImg());
         animal.setDescription(dto.getDescription());
+        animal.setUpdateTime(LocalDateTime.now());
         animalMapper.updateById(animal);
     }
 

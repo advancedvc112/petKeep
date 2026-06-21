@@ -10,8 +10,13 @@ import com.gdufe.petkeep.mapper.UserMapper;
 import com.gdufe.petkeep.service.UserService;
 import com.gdufe.petkeep.utils.JwtUtils;
 import com.gdufe.petkeep.vo.LoginVO;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * 用户业务实现
@@ -31,6 +36,8 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new BusinessException("用户名或密码错误");
         }
+        //更新登录时间
+        user.setUpdateTime(LocalDateTime.now());
 
         // 2. 验密码（BCrypt）
         if (!BCrypt.checkpw(dto.getPassword(), user.getPassword())) {
@@ -69,6 +76,8 @@ public class UserServiceImpl implements UserService {
         user.setPassword(hashedPwd);
         user.setNickname(dto.getNickname() != null ? dto.getNickname() : dto.getUsername());
         user.setRole(0);  // 默认普通用户
+        user.setCreateTime(LocalDateTime.now());
+        user.setUpdateTime(LocalDateTime.now());
         userMapper.insert(user);
     }
 }
