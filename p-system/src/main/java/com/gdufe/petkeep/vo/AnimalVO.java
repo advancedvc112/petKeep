@@ -25,7 +25,7 @@ public class AnimalVO {
     private String area;
 
     /** 封面照片完整访问 URL */
-    private String coverImgUrl;
+    private String coverImg;
 
     /** 备注描述 */
     private String description;

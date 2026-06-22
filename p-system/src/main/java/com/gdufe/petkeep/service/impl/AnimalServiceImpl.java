@@ -35,7 +35,7 @@ public class AnimalServiceImpl implements AnimalService {
 
         // 补全封面图完整 URL
         for (AnimalVO vo : result.getRecords()) {
-            vo.setCoverImgUrl(minioUtils.getAccessUrl(vo.getCoverImgUrl()));
+            vo.setCoverImg(minioUtils.getAccessUrl(vo.getCoverImg()));
         }
 
         AnimalPageVO pageVO = new AnimalPageVO();
@@ -53,7 +53,7 @@ public class AnimalServiceImpl implements AnimalService {
             throw new BusinessException(404, "动物档案不存在");
         }
         // 补全封面图完整 URL
-        vo.setCoverImgUrl(minioUtils.getAccessUrl(vo.getCoverImgUrl()));
+        vo.setCoverImg(minioUtils.getAccessUrl(vo.getCoverImg()));
         return vo;
     }
 
