@@ -79,10 +79,10 @@ public class MinioUtils {
     }
 
     /**
-     * 拼接完整的访问 URL
+     * 获取带签名的访问 URL（私有桶）
      *
      * @param savePath 上传返回的相对路径
-     * @return 完整 URL（如 http://175.178.40.188:9000/pet-keep/animal/xxx.jpg）
+     * @return 预签名 URL（如 http://175.178.40.188:9000/pet-keep/animal/xxx.jpg?X-Amz-...）
      */
     public String getAccessUrl(String savePath) {
         if (savePath == null || savePath.isBlank()) {
@@ -92,7 +92,31 @@ public class MinioUtils {
         if (savePath.startsWith(minioConfig.getBucketName() + "/")) {
             savePath = savePath.substring(minioConfig.getBucketName().length() + 1);
         }
-        return minioConfig.getExternalUrl() + savePath;
+        // 去掉前导斜杠（防止路径格式不一致）
+        if (savePath.startsWith("/")) {
+            savePath = savePath.substring(1);
+        }
+        // 去掉尾部的双斜杠
+        if (savePath.contains("//")) {
+            savePath = savePath.replace("//", "/");
+        }
+        try {
+            // 生成预签名 URL，有效期 7 天
+            String presignedUrl = minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.builder()
+                            .method(Method.GET)
+                            .bucket(minioConfig.getBucketName())
+                            .object(savePath)
+                            .expiry(7, TimeUnit.DAYS)
+                            .build()
+            );
+            log.debug("生成预签名 URL → objectName={}, 有效期=7天", savePath);
+            return presignedUrl;
+        } catch (Exception e) {
+            log.error("生成预签名 URL 失败 → objectName={}", savePath, e);
+            // 降级处理：返回基础 URL（图片可能无法访问）
+            return minioConfig.getExternalUrl() + "/" + savePath;
+        }
     }
 
     /**
