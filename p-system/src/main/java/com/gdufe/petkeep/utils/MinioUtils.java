@@ -92,7 +92,7 @@ public class MinioUtils {
         if (savePath.startsWith(minioConfig.getBucketName() + "/")) {
             savePath = savePath.substring(minioConfig.getBucketName().length() + 1);
         }
-        return minioConfig.getExternalUrl() + "/" + savePath;
+        return minioConfig.getExternalUrl() + savePath;
     }
 
     /**
