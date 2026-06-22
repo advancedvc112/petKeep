@@ -42,10 +42,6 @@ public class CheckinServiceImpl implements CheckinService {
     @Override
     public List<CheckinVO> timeline(Long animalId) {
         List<CheckinVO> list = checkinMapper.selectTimelineByAnimalId(animalId);
-        // 补全图片完整 URL
-        for (CheckinVO vo : list) {
-            vo.setImgUrl(minioUtils.getAccessUrl(vo.getImgUrl()));
-        }
         return list;
     }
 
