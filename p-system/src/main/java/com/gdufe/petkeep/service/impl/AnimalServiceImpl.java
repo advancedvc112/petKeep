@@ -33,11 +33,6 @@ public class AnimalServiceImpl implements AnimalService {
         Page<AnimalVO> page = new Page<>(dto.getPageNum(), dto.getPageSize());
         IPage<AnimalVO> result = animalMapper.selectAnimalPage(page, dto.getName(), dto.getType());
 
-        // 补全封面图完整 URL
-        for (AnimalVO vo : result.getRecords()) {
-            vo.setCoverImg(minioUtils.getAccessUrl(vo.getCoverImg()));
-        }
-
         AnimalPageVO pageVO = new AnimalPageVO();
         pageVO.setTotal(result.getTotal());
         pageVO.setPageNum(result.getCurrent());
@@ -52,8 +47,6 @@ public class AnimalServiceImpl implements AnimalService {
         if (vo == null) {
             throw new BusinessException(404, "动物档案不存在");
         }
-        // 补全封面图完整 URL
-        vo.setCoverImg(minioUtils.getAccessUrl(vo.getCoverImg()));
         return vo;
     }
 
